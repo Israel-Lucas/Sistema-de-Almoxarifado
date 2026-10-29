@@ -1,0 +1,260 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Usuários | Almoxarifado</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="../styles/base.css" />
+    <link rel="stylesheet" href="../styles/topbar.css" />
+    <link rel="stylesheet" href="../styles/forms.css" />
+    <link rel="stylesheet" href="../styles/usuarios.css" />
+  </head>
+  <body>
+    <header class="topbar">
+      <a class="topbar__brand" href="dashboard.html"
+        ><span class="topbar__brand-mark">A</span><span>Almoxarifado</span></a
+      >
+      <nav class="topbar__nav" aria-label="Navegação principal">
+        <a class="topbar__link" href="dashboard.html">Dashboard</a
+        ><a class="topbar__link" href="solicitacoes.html">Solicitação</a
+        ><a class="topbar__link" href="devolucoes.html">Devolução</a
+        ><a class="topbar__link" href="pedidos.html">Pedidos</a
+        ><a class="topbar__link" href="registros.html">Registros</a
+        ><a
+          class="topbar__link is-active"
+          href="usuarios.html"
+          aria-current="page"
+          >Usuários</a
+        >
+      </nav>
+      <div class="topbar__actions">
+        <div class="topbar__user">
+          <span id="session-user-name">Usuário</span
+          ><small id="session-user-unit">Unidade</small>
+        </div>
+        <button class="topbar__logout" id="logout-button" type="button">
+          Sair
+        </button>
+      </div>
+    </header>
+    <main class="users-page">
+      <header class="users-heading">
+        <div>
+          <p>Administração</p>
+          <h1>Usuários</h1>
+          <span>Gerencie acessos, perfis e unidades.</span>
+        </div>
+        <div class="users-heading__actions">
+          <button
+            id="manage-units-button"
+            class="secondary-button"
+            type="button"
+          >
+            Gerenciar unidades</button
+          ><button id="add-user-button" class="primary-button" type="button">
+            Adicionar usuário
+          </button>
+        </div>
+      </header>
+      <section class="users-toolbar">
+        <input
+          id="user-search"
+          type="search"
+          placeholder="Pesquisar nome ou usuário"
+        />
+      </section>
+      <section class="users-panel">
+        <div class="users-table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Nome</th>
+                <th>Usuário</th>
+                <th>E-mail</th>
+                <th>Perfil</th>
+                <th>Unidade</th>
+                <th>Situação</th>
+                <th>Ação</th>
+              </tr>
+            </thead>
+            <tbody id="users-table-body"></tbody>
+          </table>
+        </div>
+        <p id="users-empty" class="users-empty" hidden>
+          Nenhum usuário encontrado.
+        </p>
+      </section>
+    </main>
+    <dialog id="user-dialog" class="app-dialog">
+      <form id="user-form" method="dialog">
+        <header>
+          <div>
+            <h2 id="user-dialog-title">Adicionar usuário</h2>
+            <p>Defina os dados e o nível de acesso.</p>
+          </div>
+          <button
+            id="close-user-dialog"
+            class="icon-button"
+            type="button"
+            aria-label="Fechar"
+          >
+            ×
+          </button>
+        </header>
+        <input id="editing-user-id" type="hidden" />
+        <div class="form-grid">
+          <label class="form-field form-field--wide"
+            ><span>Nome</span><input id="user-name" maxlength="100" required
+          /></label>
+          <label class="form-field"
+            ><span>Usuário</span
+            ><input
+              id="user-username"
+              maxlength="100"
+              autocomplete="off"
+              required
+          /></label>
+          <label class="form-field"
+            ><span id="password-label">Senha</span
+            ><input
+              id="user-password"
+              type="password"
+              minlength="4"
+              autocomplete="new-password"
+          /></label>
+          <label class="form-field form-field--wide"
+            ><span>E-mail <small id="email-requirement">(opcional)</small></span
+            ><input
+              id="user-email"
+              type="email"
+              maxlength="254"
+              autocomplete="email"
+          /></label>
+          <label class="form-field"
+            ><span>Perfil</span
+            ><select id="user-role" required>
+              <option value="USER">Usuário</option>
+              <option value="MASTER">Master</option>
+            </select></label
+          >
+          <label class="form-field"
+            ><span>Unidade</span
+            ><select id="user-unit" required></select
+          ></label>
+          <label class="active-field form-field--wide"
+            ><input id="user-active" type="checkbox" checked /><span
+              >Usuário ativo</span
+            ></label
+          >
+        </div>
+        <p id="user-form-message" class="form-feedback" role="alert"></p>
+        <footer>
+          <button
+            id="cancel-user-dialog"
+            class="secondary-button"
+            type="button"
+          >
+            Cancelar</button
+          ><button class="primary-button" type="submit">Salvar usuário</button>
+        </footer>
+      </form>
+    </dialog>
+    <dialog id="unit-edit-dialog" class="app-dialog app-dialog--small">
+      <form id="unit-edit-form" method="dialog">
+        <header>
+          <div>
+            <h2>Editar unidade</h2>
+            <p>O código técnico e o histórico serão preservados.</p>
+          </div>
+          <button
+            class="icon-button"
+            type="button"
+            data-close-unit-edit
+            aria-label="Fechar"
+          >
+            ×
+          </button>
+        </header>
+        <input id="editing-unit-id" type="hidden" />
+        <div class="form-grid">
+          <label class="form-field form-field--wide">
+            <span>Novo nome da unidade</span>
+            <input id="editing-unit-name" maxlength="100" required />
+          </label>
+          <div class="unit-code-preview form-field--wide">
+            <small>Código técnico</small>
+            <strong id="editing-unit-code"></strong>
+          </div>
+        </div>
+        <p id="unit-edit-message" class="form-feedback" role="alert"></p>
+        <footer>
+          <button class="secondary-button" type="button" data-close-unit-edit>
+            Cancelar
+          </button>
+          <button class="primary-button" type="submit">Salvar alteração</button>
+        </footer>
+      </form>
+    </dialog>
+    <dialog id="unit-dialog" class="app-dialog app-dialog--small">
+      <form id="unit-form" method="dialog">
+        <header>
+          <div>
+            <h2>Gerenciar unidades</h2>
+            <p>Cadastre, edite ou remova unidades sem vínculos.</p>
+          </div>
+          <button
+            id="close-unit-dialog"
+            class="icon-button"
+            type="button"
+            aria-label="Fechar"
+          >
+            ×
+          </button>
+        </header>
+        <div class="form-grid">
+          <label class="form-field form-field--wide"
+            ><span>Nome da unidade</span>
+            <div class="inline-create">
+              <input id="unit-name" maxlength="100" required /><button
+                class="primary-button"
+                type="submit"
+              >
+                Adicionar
+              </button>
+            </div></label
+          >
+        </div>
+        <p id="unit-form-message" class="form-feedback" role="alert"></p>
+        <section class="management-list">
+          <h3>Unidades cadastradas</h3>
+          <div id="units-list"></div>
+        </section>
+        <footer>
+          <button
+            id="finish-unit-dialog"
+            class="secondary-button"
+            type="button"
+          >
+            Fechar
+          </button>
+        </footer>
+      </form>
+    </dialog>
+    <div
+      id="page-notice"
+      class="page-notice"
+      role="status"
+      aria-live="polite"
+    ></div>
+    <script src="../scripts/api.js"></script>
+    <script src="../scripts/ui-safety.js"></script>
+    <script src="../scripts/notifications.js"></script>
+    <script src="../scripts/usuarios.js"></script>
+  </body>
+</html>

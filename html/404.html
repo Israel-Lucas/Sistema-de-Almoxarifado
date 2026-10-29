@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Página não encontrada | Almoxarifado</title>
+    <link rel="stylesheet" href="../styles/base.css" />
+    <style>
+      body {
+        display: grid;
+        min-height: 100vh;
+        place-items: center;
+        color: #f4f7fb;
+        background: #0b121b;
+      }
+      .error-page {
+        width: min(480px, calc(100% - 32px));
+        padding: 40px;
+        border: 1px solid #293747;
+        border-radius: 16px;
+        background: #111a24;
+        text-align: center;
+      }
+      .error-page strong {
+        color: #d5a933;
+        font-size: 0.75rem;
+        letter-spacing: 0.15em;
+      }
+      .error-page h1 {
+        margin: 12px 0;
+        font-size: 2rem;
+      }
+      .error-page p {
+        color: #94a2b3;
+        line-height: 1.55;
+      }
+      .error-page a {
+        display: inline-flex;
+        margin-top: 15px;
+        padding: 11px 17px;
+        border-radius: 9px;
+        color: white;
+        background: #2785ef;
+        text-decoration: none;
+        font-weight: 700;
+      }
+    </style>
+  </head>
+  <body>
+    <main class="error-page">
+      <strong>ERRO 404</strong>
+      <h1>Página não encontrada</h1>
+      <p>O endereço informado não existe ou foi removido.</p>
+      <a href="dashboard.html">Voltar ao Dashboard</a>
+    </main>
+  </body>
+</html>

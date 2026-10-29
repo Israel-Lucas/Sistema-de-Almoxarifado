@@ -1,0 +1,188 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Devolução | Almoxarifado</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="../styles/base.css" />
+    <link rel="stylesheet" href="../styles/topbar.css" />
+    <link rel="stylesheet" href="../styles/forms.css" />
+    <link rel="stylesheet" href="../styles/devolucoes.css" />
+  </head>
+  <body>
+    <header class="topbar">
+      <a class="topbar__brand" href="dashboard.html"
+        ><span class="topbar__brand-mark">A</span><span>Almoxarifado</span></a
+      >
+      <nav class="topbar__nav" aria-label="Navegação principal">
+        <a class="topbar__link" href="dashboard.html">Dashboard</a>
+        <a class="topbar__link" href="solicitacoes.html">Solicitação</a>
+        <a
+          class="topbar__link is-active"
+          href="devolucoes.html"
+          aria-current="page"
+          >Devolução</a
+        >
+        <a class="topbar__link" href="pedidos.html">Pedidos</a>
+        <a class="topbar__link" href="registros.html" data-master-only
+          >Registros</a
+        >
+        <a class="topbar__link" href="usuarios.html" data-master-only
+          >Usuários</a
+        >
+      </nav>
+      <div class="topbar__actions">
+        <div class="topbar__user">
+          <span id="session-user-name">Usuário</span
+          ><small id="session-user-unit">Unidade</small>
+        </div>
+        <button class="topbar__logout" id="logout-button" type="button">
+          Sair
+        </button>
+      </div>
+    </header>
+    <main class="returns-page">
+      <header class="returns-heading">
+        <div>
+          <p>Retorno ao almoxarifado</p>
+          <h1>Devolução de itens</h1>
+          <span id="returns-description"
+            >Selecione os itens que serão enviados para a Matriz.</span
+          >
+        </div>
+        <button id="review-return" class="return-cart-button" type="button">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path
+              d="M9 11l3 3L22 4M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"
+            /></svg
+          ><span>Revisar devolução</span
+          ><strong id="return-cart-count">0</strong>
+        </button>
+      </header>
+      <section class="returns-search">
+        <input
+          id="return-search"
+          type="search"
+          placeholder="Pesquisar item ou modelo"
+        />
+      </section>
+      <section id="return-products" class="return-products"></section>
+      <div id="return-products-empty" class="returns-empty" hidden>
+        Nenhum item com saldo disponível nesta unidade.
+      </div>
+      <section class="return-history">
+        <header>
+          <div>
+            <h2>Minhas devoluções</h2>
+            <p>Acompanhe o recebimento pela Matriz.</p>
+          </div>
+          <button id="export-my-returns" class="secondary-button" type="button">
+            Exportar CSV
+          </button>
+        </header>
+        <div class="return-history-list" id="return-history-list"></div>
+        <p id="return-history-empty" class="returns-empty" hidden>
+          Nenhuma devolução enviada.
+        </p>
+      </section>
+    </main>
+    <dialog id="return-review-dialog" class="app-dialog">
+      <form id="return-review-form" method="dialog">
+        <header>
+          <div>
+            <h2>Revisar devolução</h2>
+            <p>Confira os itens antes de enviar.</p>
+          </div>
+          <button
+            class="icon-button"
+            type="button"
+            data-close-return-review
+            aria-label="Fechar"
+          >
+            ×
+          </button>
+        </header>
+        <div class="return-review">
+          <div id="return-review-items" class="return-review-items"></div>
+          <p id="return-review-empty" class="returns-empty">
+            Nenhum item selecionado.
+          </p>
+          <label class="form-field"
+            ><span>Motivo da devolução</span
+            ><textarea
+              id="return-reason"
+              rows="4"
+              maxlength="500"
+              required
+            ></textarea>
+          </label>
+        </div>
+        <p id="return-review-message" class="form-feedback" role="alert"></p>
+        <footer>
+          <button
+            class="secondary-button"
+            type="button"
+            data-close-return-review
+          >
+            Continuar escolhendo</button
+          ><button id="send-return" class="primary-button" type="submit">
+            Enviar devolução
+          </button>
+        </footer>
+      </form>
+    </dialog>
+    <dialog id="return-cancel-dialog" class="app-dialog app-dialog--small">
+      <form id="return-cancel-form" method="dialog">
+        <header>
+          <div>
+            <h2>Cancelar devolução</h2>
+            <p id="return-cancel-name"></p>
+          </div>
+          <button class="icon-button" type="button" data-close-return-cancel>
+            ×
+          </button>
+        </header>
+        <input id="return-cancel-id" type="hidden" />
+        <div class="form-grid">
+          <label class="form-field form-field--wide"
+            ><span>Motivo do cancelamento</span
+            ><textarea
+              id="return-cancel-reason"
+              rows="4"
+              maxlength="500"
+              required
+            ></textarea>
+          </label>
+        </div>
+        <p id="return-cancel-message" class="form-feedback"></p>
+        <footer>
+          <button
+            class="secondary-button"
+            type="button"
+            data-close-return-cancel
+          >
+            Voltar</button
+          ><button class="danger-button" type="submit">
+            Confirmar cancelamento
+          </button>
+        </footer>
+      </form>
+    </dialog>
+    <div
+      id="page-notice"
+      class="page-notice"
+      role="status"
+      aria-live="polite"
+    ></div>
+    <script src="../scripts/api.js"></script>
+    <script src="../scripts/ui-safety.js"></script>
+    <script src="../scripts/notifications.js"></script>
+    <script src="../scripts/devolucoes.js"></script>
+  </body>
+</html>

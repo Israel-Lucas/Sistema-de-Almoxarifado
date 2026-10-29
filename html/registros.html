@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Registros | Almoxarifado</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="../styles/base.css" />
+    <link rel="stylesheet" href="../styles/topbar.css" />
+    <link rel="stylesheet" href="../styles/registros.css" />
+  </head>
+  <body>
+    <header class="topbar">
+      <a class="topbar__brand" href="dashboard.html"
+        ><span class="topbar__brand-mark">A</span><span>Almoxarifado</span></a
+      >
+      <nav class="topbar__nav" aria-label="Navegação principal">
+        <a class="topbar__link" href="dashboard.html">Dashboard</a
+        ><a class="topbar__link" href="solicitacoes.html">Solicitação</a
+        ><a class="topbar__link" href="devolucoes.html">Devolução</a
+        ><a class="topbar__link" href="pedidos.html">Pedidos</a
+        ><a
+          class="topbar__link is-active"
+          href="registros.html"
+          aria-current="page"
+          >Registros</a
+        ><a class="topbar__link" href="usuarios.html">Usuários</a>
+      </nav>
+      <div class="topbar__actions">
+        <div class="topbar__user">
+          <span id="session-user-name">Usuário</span
+          ><small id="session-user-unit">Unidade</small>
+        </div>
+        <button class="topbar__logout" id="logout-button" type="button">
+          Sair
+        </button>
+      </div>
+    </header>
+    <main class="logs-page">
+      <header class="logs-heading">
+        <p>Auditoria</p>
+        <h1>Registros</h1>
+        <span>Histórico das operações realizadas no almoxarifado.</span>
+      </header>
+      <section class="logs-filters">
+        <input
+          id="logs-search"
+          type="search"
+          placeholder="Pesquisar usuário, unidade ou atividade"
+        /><select id="logs-method">
+          <option value="">Todas as ações</option>
+          <option value="POST">Cadastros e operações</option>
+          <option value="PUT">Atualizações</option>
+          <option value="PATCH">Alterações</option>
+          <option value="DELETE">Exclusões</option>
+        </select>
+        <button id="export-logs" class="log-export" type="button">
+          Exportar registros</button
+        ><button id="export-movements" class="log-export" type="button">
+          Exportar movimentações
+        </button>
+      </section>
+      <section class="logs-panel">
+        <div class="logs-panel__header">
+          <div>
+            <h2>Histórico de atividades</h2>
+            <p>Os registros são gerados automaticamente pelo servidor.</p>
+          </div>
+        </div>
+        <nav class="logs-pagination">
+          <button id="logs-prev" type="button">Anterior</button
+          ><span id="logs-page-info">Página 1</span
+          ><button id="logs-next" type="button">Próxima</button>
+        </nav>
+        <div class="logs-table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Data</th>
+                <th>Usuário</th>
+                <th>Unidade</th>
+                <th>Tipo</th>
+                <th>Atividade realizada</th>
+              </tr>
+            </thead>
+            <tbody id="logs-table-body"></tbody>
+          </table>
+        </div>
+        <div id="logs-empty" class="logs-empty" hidden>
+          <span aria-hidden="true">≡</span
+          ><strong>Nenhum registro disponível</strong>
+          <p>As atividades realizadas no sistema aparecerão aqui.</p>
+        </div>
+      </section>
+    </main>
+    <script src="../scripts/api.js"></script>
+    <script src="../scripts/ui-safety.js"></script>
+    <script src="../scripts/notifications.js"></script>
+    <script src="../scripts/registros.js"></script>
+  </body>
+</html>

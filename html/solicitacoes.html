@@ -1,0 +1,650 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Solicitação | Almoxarifado</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="../styles/base.css" />
+    <link rel="stylesheet" href="../styles/topbar.css" />
+    <link rel="stylesheet" href="../styles/forms.css" />
+    <link rel="stylesheet" href="../styles/solicitacoes.css" />
+  </head>
+  <body>
+    <header class="topbar">
+      <a class="topbar__brand" href="dashboard.html"
+        ><span class="topbar__brand-mark">A</span><span>Almoxarifado</span></a
+      >
+      <nav class="topbar__nav" aria-label="Navegação principal">
+        <a class="topbar__link" href="dashboard.html">Dashboard</a>
+        <a
+          class="topbar__link is-active"
+          href="solicitacoes.html"
+          aria-current="page"
+          >Solicitação</a
+        >
+        <a class="topbar__link" href="devolucoes.html">Devolução</a>
+        <a class="topbar__link" href="pedidos.html">Pedidos</a>
+        <a class="topbar__link" href="registros.html" data-master-only
+          >Registros</a
+        >
+        <a class="topbar__link" href="usuarios.html" data-master-only
+          >Usuários</a
+        >
+      </nav>
+      <div class="topbar__actions">
+        <div class="topbar__user">
+          <span id="session-user-name">Usuário</span
+          ><small id="session-user-unit">Unidade</small>
+        </div>
+        <button class="topbar__logout" id="logout-button" type="button">
+          Sair
+        </button>
+      </div>
+    </header>
+
+    <main class="catalog-page">
+      <header class="page-heading">
+        <div>
+          <p>Catálogo</p>
+          <h1>Solicitação de itens</h1>
+          <span id="page-description">Consulte os itens disponíveis.</span>
+        </div>
+        <div id="master-catalog-actions" class="page-heading__actions" hidden>
+          <button
+            id="create-type-button"
+            class="secondary-button"
+            type="button"
+          >
+            Criar tipo
+          </button>
+          <button id="add-product-button" class="primary-button" type="button">
+            Adicionar item
+          </button>
+        </div>
+        <div id="request-actions" class="request-actions" hidden>
+          <button
+            id="open-cart-button"
+            class="cart-button"
+            type="button"
+            hidden
+          >
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path
+                d="M9 5h6M9 3h6v4H9V3Zm-3 2H5a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-1M7 12l2 2 4-4M7 18h10"
+              />
+            </svg>
+            <span class="cart-button__label">Revisar pedido</span>
+            <span id="cart-count" class="cart-button__count">0</span>
+          </button>
+          <button
+            id="new-purchase-button"
+            class="secondary-button"
+            type="button"
+            hidden
+          >
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path
+                d="M3 4h2l2.2 10.1a2 2 0 0 0 2 1.6h7.7a2 2 0 0 0 1.9-1.4L21 7H7M10 20a1 1 0 1 1-2 0 1 1 0 0 1 2 0Zm9 0a1 1 0 1 1-2 0 1 1 0 0 1 2 0Z"
+              />
+            </svg>
+            <span>Solicitar compra</span>
+          </button>
+        </div>
+      </header>
+
+      <section class="catalog-toolbar">
+        <input
+          id="product-search"
+          type="search"
+          placeholder="Pesquisar por nome, tipo ou modelo"
+        />
+      </section>
+
+      <section
+        id="product-list"
+        class="product-grid"
+        aria-live="polite"
+      ></section>
+      <div id="products-empty" class="catalog-empty" hidden>
+        <strong>Nenhum item cadastrado</strong>
+        <p>Os itens adicionados aparecerão nesta tela.</p>
+      </div>
+      <nav class="catalog-pagination">
+        <button id="products-prev" type="button">Anterior</button
+        ><span id="products-page-info">Página 1</span
+        ><button id="products-next" type="button">Próxima</button>
+      </nav>
+    </main>
+
+    <dialog id="item-kind-dialog" class="app-dialog app-dialog--small">
+      <div class="item-kind-picker">
+        <header>
+          <div>
+            <h2>Adicionar item</h2>
+            <p>Escolha o que deseja cadastrar.</p>
+          </div>
+          <button
+            class="icon-button"
+            type="button"
+            data-close-dialog
+            aria-label="Fechar"
+          >
+            ×
+          </button>
+        </header>
+        <div>
+          <button id="choose-kit-item" type="button">
+            <strong>Kit de itens</strong
+            ><span>Vários produtos com estoque compartilhado.</span></button
+          ><button id="choose-single-item" type="button">
+            <strong>Item avulso</strong
+            ><span>Cadastro tradicional de um produto.</span>
+          </button>
+        </div>
+      </div>
+    </dialog>
+
+    <dialog id="kit-builder-dialog" class="app-dialog kit-builder-dialog">
+      <form id="kit-builder-form" method="dialog">
+        <header>
+          <div>
+            <h2>Cadastrar kit de itens</h2>
+            <p>O kit usa o saldo individual de cada componente.</p>
+          </div>
+          <button
+            class="icon-button"
+            type="button"
+            data-close-dialog
+            aria-label="Fechar"
+          >
+            ×
+          </button>
+        </header>
+        <div class="form-grid">
+          <label class="form-field"
+            ><span>Nome do kit</span
+            ><input
+              id="kit-name"
+              maxlength="100"
+              required
+              placeholder="Ex.: Kit home office" /></label
+          ><label class="form-field"
+            ><span>Tipo</span
+            ><select id="kit-type" required></select></label
+          ><label class="form-field form-field--wide"
+            ><span>Descrição <small>(opcional)</small></span
+            ><textarea id="kit-description" maxlength="500" rows="3"></textarea>
+          </label>
+        </div>
+        <section class="kit-components-editor">
+          <div class="kit-components-heading">
+            <div>
+              <h3>Itens do kit</h3>
+              <p>Selecione um item existente ou cadastre um novo.</p>
+            </div>
+            <button
+              id="add-kit-component"
+              class="secondary-button"
+              type="button"
+            >
+              + Adicionar item
+            </button>
+          </div>
+          <div id="kit-component-rows"></div>
+        </section>
+        <p id="kit-builder-message" class="form-feedback" role="alert"></p>
+        <footer>
+          <button class="secondary-button" type="button" data-close-dialog>
+            Cancelar
+          </button>
+          <button class="primary-button" type="submit">Salvar kit</button>
+          <button
+            id="delete-kit-in-edit"
+            class="danger-button"
+            type="button"
+            hidden
+          >
+            Excluir kit
+          </button>
+        </footer>
+      </form>
+    </dialog>
+
+    <dialog id="product-dialog" class="app-dialog">
+      <form id="product-form" method="dialog">
+        <header>
+          <div>
+            <h2>Adicionar item</h2>
+            <p>A quantidade inicial será adicionada à Matriz.</p>
+          </div>
+          <button
+            class="icon-button"
+            type="button"
+            data-close-dialog
+            aria-label="Fechar"
+          >
+            ×
+          </button>
+        </header>
+        <div class="form-grid">
+          <label class="form-field form-field--wide"
+            ><span>Nome</span><input name="name" required maxlength="100"
+          /></label>
+          <label class="form-field"
+            ><span>Quantidade</span
+            ><input
+              name="quantity"
+              type="number"
+              required
+              min="0"
+              max="999"
+              step="1"
+          /></label>
+          <label class="form-field"
+            ><span>Tipo</span
+            ><select id="product-type" name="type" required></select
+          ></label>
+          <label class="form-field form-field--wide"
+            ><span>Modelo</span><input name="model" required maxlength="100"
+          /></label>
+          <label class="form-field form-field--wide"
+            ><span>Descrição <small>(opcional)</small></span
+            ><textarea name="description" maxlength="500" rows="4"></textarea>
+          </label>
+        </div>
+        <p id="product-form-message" class="form-feedback" role="alert"></p>
+        <footer>
+          <button class="secondary-button" type="button" data-close-dialog>
+            Cancelar</button
+          ><button class="primary-button" type="submit">Criar item</button>
+        </footer>
+      </form>
+    </dialog>
+
+    <dialog id="set-request-dialog" class="app-dialog app-dialog--small">
+      <form id="set-request-form" method="dialog">
+        <header>
+          <div>
+            <h2>Solicitar conjunto</h2>
+            <p id="set-request-name"></p>
+          </div>
+          <button
+            class="icon-button"
+            type="button"
+            data-close-dialog
+            aria-label="Fechar"
+          >
+            ×
+          </button>
+        </header>
+        <div class="form-grid">
+          <label class="form-field form-field--wide"
+            ><span>Quantidade de conjuntos</span
+            ><input
+              id="set-request-quantity"
+              type="number"
+              min="1"
+              max="99"
+              value="1"
+              required
+          /></label>
+        </div>
+        <section class="set-request-components">
+          <h3>Composição</h3>
+          <div id="set-request-components"></div>
+        </section>
+        <div class="form-grid">
+          <label class="form-field form-field--wide"
+            ><span>Motivo da solicitação</span
+            ><textarea
+              id="set-request-reason"
+              maxlength="500"
+              rows="4"
+              required
+            ></textarea>
+          </label>
+        </div>
+        <p id="set-request-message" class="form-feedback" role="alert"></p>
+        <footer>
+          <button class="secondary-button" type="button" data-close-dialog>
+            Cancelar</button
+          ><button class="primary-button" type="submit">
+            Enviar solicitação
+          </button>
+        </footer>
+      </form>
+    </dialog>
+
+    <dialog id="type-dialog" class="app-dialog app-dialog--small">
+      <form id="type-form" method="dialog">
+        <header>
+          <div>
+            <h2>Criar tipo</h2>
+            <p>O novo tipo ficará disponível no cadastro de itens.</p>
+          </div>
+          <button
+            class="icon-button"
+            type="button"
+            data-close-dialog
+            aria-label="Fechar"
+          >
+            ×
+          </button>
+        </header>
+        <div class="form-grid">
+          <label class="form-field form-field--wide"
+            ><span>Nome do tipo</span>
+            <div class="inline-create">
+              <input id="type-name" maxlength="100" required /><button
+                class="primary-button"
+                type="submit"
+              >
+                Adicionar
+              </button>
+            </div></label
+          >
+        </div>
+        <p id="type-form-message" class="form-feedback" role="alert"></p>
+        <section class="management-list">
+          <h3>Tipos cadastrados</h3>
+          <div id="types-list"></div>
+          <p id="types-empty">Nenhum tipo cadastrado.</p>
+        </section>
+        <footer>
+          <button class="secondary-button" type="button" data-close-dialog>
+            Fechar
+          </button>
+        </footer>
+      </form>
+    </dialog>
+
+    <dialog id="quantity-dialog" class="app-dialog">
+      <form id="quantity-form" method="dialog">
+        <header>
+          <div>
+            <h2>Editar item</h2>
+            <p id="quantity-product-name"></p>
+          </div>
+          <button
+            class="icon-button"
+            type="button"
+            data-close-dialog
+            aria-label="Fechar"
+          >
+            ×
+          </button>
+        </header>
+        <input id="quantity-product-id" type="hidden" />
+        <section class="edit-section">
+          <h3>Dados do item</h3>
+          <div class="form-grid">
+            <label class="form-field form-field--wide"
+              ><span>Nome</span
+              ><input id="edit-product-name" maxlength="100" required
+            /></label>
+            <label class="form-field"
+              ><span>Modelo</span
+              ><input id="edit-product-model" maxlength="100" required
+            /></label>
+            <label class="form-field"
+              ><span>Tipo</span
+              ><select id="edit-product-type" required></select
+            ></label>
+            <label class="form-field form-field--wide"
+              ><span>Descrição <small>(opcional)</small></span
+              ><textarea
+                id="edit-product-description"
+                maxlength="500"
+                rows="3"
+              ></textarea>
+            </label>
+          </div>
+          <button id="save-product-data" class="primary-button" type="button">
+            Salvar dados
+          </button>
+        </section>
+        <section class="edit-section">
+          <h3>Alteração de estoque</h3>
+          <div class="form-grid">
+            <label class="form-field"
+              ><span>Remover de</span
+              ><select id="stock-remove-unit"></select
+            ></label>
+            <label class="form-field"
+              ><span>Quantidade a remover</span
+              ><input
+                id="stock-remove-quantity"
+                type="number"
+                min="1"
+                max="999"
+                step="1"
+                disabled
+            /></label>
+            <label class="form-field"
+              ><span>Acrescentar em</span
+              ><select id="stock-add-unit"></select
+            ></label>
+            <label class="form-field"
+              ><span>Quantidade a acrescentar</span
+              ><input
+                id="stock-add-quantity"
+                type="number"
+                min="1"
+                max="999"
+                step="1"
+                disabled
+            /></label>
+            <p class="stock-change-help form-field--wide">
+              Para transferir, preencha uma origem e um destino. Para registrar
+              compra ou baixa, preencha somente o lado necessário.
+            </p>
+          </div>
+          <div class="stock-save-row">
+            <button class="primary-button" type="submit">Salvar estoque</button>
+          </div>
+          <p id="quantity-form-message" class="form-feedback" role="alert"></p>
+        </section>
+        <footer>
+          <button class="secondary-button" type="button" data-close-dialog>
+            Cancelar
+          </button>
+          <button
+            id="delete-product-in-edit"
+            class="danger-button"
+            type="button"
+          >
+            Excluir item
+          </button>
+        </footer>
+      </form>
+    </dialog>
+
+    <dialog id="request-dialog" class="app-dialog app-dialog--small">
+      <form id="request-form" method="dialog">
+        <header>
+          <div>
+            <h2>Solicitar item</h2>
+            <p id="request-product-name"></p>
+          </div>
+          <button
+            class="icon-button"
+            type="button"
+            data-close-dialog
+            aria-label="Fechar"
+          >
+            ×
+          </button>
+        </header>
+        <input id="request-product-id" type="hidden" />
+        <div class="form-grid">
+          <label class="form-field form-field--wide"
+            ><span>Quantidade</span
+            ><input
+              id="request-quantity"
+              type="number"
+              min="1"
+              step="1"
+              required
+          /></label>
+        </div>
+        <footer>
+          <button class="secondary-button" type="button" data-close-dialog>
+            Cancelar</button
+          ><button class="primary-button" type="submit">
+            Adicionar ao pedido
+          </button>
+        </footer>
+      </form>
+    </dialog>
+    <dialog id="cart-dialog" class="app-dialog">
+      <form id="cart-form" method="dialog">
+        <header>
+          <div>
+            <h2>Revisar pedido</h2>
+            <p>Confira todos os itens antes de enviar.</p>
+          </div>
+          <button
+            class="icon-button"
+            type="button"
+            data-close-dialog
+            aria-label="Fechar"
+          >
+            ×
+          </button>
+        </header>
+        <div class="cart-review">
+          <div id="cart-items" class="cart-review__items"></div>
+          <p id="cart-empty" class="cart-review__empty">
+            Seu pedido ainda está vazio.
+          </p>
+          <label class="form-field">
+            <span>Motivo geral da solicitação</span>
+            <textarea
+              id="cart-reason"
+              rows="4"
+              maxlength="500"
+              required
+            ></textarea>
+          </label>
+        </div>
+        <p id="cart-form-message" class="form-feedback" role="alert"></p>
+        <footer>
+          <button class="secondary-button" type="button" data-close-dialog>
+            Continuar escolhendo
+          </button>
+          <button id="send-cart-button" class="primary-button" type="submit">
+            Enviar pedido
+          </button>
+        </footer>
+      </form>
+    </dialog>
+    <dialog id="purchase-dialog" class="app-dialog">
+      <form id="purchase-form" method="dialog" enctype="multipart/form-data">
+        <header>
+          <div>
+            <h2>Solicitar item novo</h2>
+            <p>Use quando o produto ainda não existe no estoque.</p>
+          </div>
+          <button
+            class="icon-button"
+            type="button"
+            data-close-dialog
+            aria-label="Fechar"
+          >
+            ×
+          </button>
+        </header>
+        <div class="form-grid">
+          <label class="form-field form-field--wide"
+            ><span>Item</span><input name="itemName" maxlength="100" required
+          /></label>
+          <label class="form-field"
+            ><span>Quantidade</span
+            ><input
+              name="quantity"
+              type="number"
+              min="1"
+              max="999"
+              step="1"
+              required
+          /></label>
+          <label class="form-field"
+            ><span>Prioridade</span
+            ><select name="priority" required>
+              <option value="NORMAL">Normal</option>
+              <option value="BAIXA">Baixa</option>
+              <option value="ALTA">Alta</option>
+              <option value="URGENTE">Urgente</option>
+            </select></label
+          >
+          <label class="form-field"
+            ><span>Valor estimado <small>(opcional)</small></span
+            ><input name="estimatedValue" type="number" min="0" step="0.01"
+          /></label>
+          <label class="form-field"
+            ><span>Link de referência <small>(opcional)</small></span
+            ><input name="referenceLink" type="url" maxlength="500"
+          /></label>
+          <label class="form-field form-field--wide"
+            ><span>Justificativa</span
+            ><textarea
+              name="justification"
+              maxlength="500"
+              rows="4"
+              required
+            ></textarea>
+          </label>
+          <label class="form-field form-field--wide"
+            ><span
+              >Orçamento, foto ou referência
+              <small>(até 3 arquivos PDF/JPG/PNG/WEBP, 5 MB cada)</small></span
+            ><input
+              name="attachments"
+              type="file"
+              accept=".pdf,.jpg,.jpeg,.png,.webp"
+              multiple
+          /></label>
+        </div>
+        <p id="purchase-form-message" class="form-feedback" role="alert"></p>
+        <footer>
+          <button class="secondary-button" type="button" data-close-dialog>
+            Cancelar</button
+          ><button class="primary-button" type="submit">
+            Enviar solicitação
+          </button>
+        </footer>
+      </form>
+    </dialog>
+
+    <div
+      id="page-notice"
+      class="page-notice"
+      role="status"
+      aria-live="polite"
+    ></div>
+    <div
+      id="success-overlay"
+      class="success-overlay"
+      hidden
+      aria-live="assertive"
+    >
+      <section class="success-overlay__card" role="status">
+        <span class="success-overlay__icon" aria-hidden="true">✓</span>
+        <div>
+          <strong>Alteração concluída</strong>
+          <p id="success-overlay-message"></p>
+        </div>
+      </section>
+    </div>
+    <script src="../scripts/api.js"></script>
+    <script src="../scripts/ui-safety.js"></script>
+    <script src="../scripts/notifications.js"></script>
+    <script src="../scripts/solicitacoes.js"></script>
+  </body>
+</html>

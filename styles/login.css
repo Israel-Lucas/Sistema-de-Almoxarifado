@@ -1,0 +1,220 @@
+.login-page {
+  position: relative;
+  display: flex;
+  min-height: 100vh;
+  align-items: center;
+  justify-content: flex-end;
+  overflow: hidden;
+  padding: 48px clamp(32px, 7vw, 130px);
+  background-color: #07111b;
+  background-image:
+    radial-gradient(circle at 40% 43%, rgba(29, 58, 83, 0.22), transparent 34%),
+    url("../assets/images/login-background.png");
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat;
+}
+
+.login-page__shade {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    90deg,
+    rgba(2, 7, 12, 0.03) 25%,
+    rgba(2, 7, 12, 0.28) 58%,
+    rgba(2, 7, 12, 0.76) 100%
+  );
+}
+
+.login-card {
+  position: relative;
+  z-index: 1;
+  width: min(100%, 470px);
+  padding: 38px 40px 28px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 22px;
+  background: linear-gradient(
+    145deg,
+    rgba(34, 42, 51, 0.92),
+    rgba(19, 24, 30, 0.88)
+  );
+  box-shadow:
+    0 28px 70px rgba(0, 0, 0, 0.48),
+    inset 0 1px rgba(255, 255, 255, 0.06);
+  backdrop-filter: blur(16px);
+}
+
+.login-card h1 {
+  margin: 0;
+  color: var(--color-text);
+  font-size: clamp(1.65rem, 3vw, 2rem);
+  letter-spacing: -0.04em;
+}
+
+.login-card__header p {
+  margin: 10px 0 28px;
+  color: var(--color-muted);
+  font-size: 0.9rem;
+}
+
+.login-form {
+  display: grid;
+  gap: 19px;
+}
+
+.field {
+  display: grid;
+  gap: 8px;
+}
+
+.field label {
+  color: #dbe2eb;
+  font-size: 0.82rem;
+  font-weight: 500;
+}
+
+.field__control {
+  position: relative;
+}
+
+.field__control > svg {
+  position: absolute;
+  top: 50%;
+  left: 17px;
+  width: 19px;
+  transform: translateY(-50%);
+  fill: none;
+  stroke: #8996a6;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 1.7;
+}
+
+.field input {
+  width: 100%;
+  height: 52px;
+  padding: 0 48px;
+  border: 1px solid transparent;
+  border-radius: 12px;
+  outline: none;
+  color: #15202d;
+  background: rgba(249, 251, 253, 0.97);
+  transition:
+    border-color 0.2s,
+    box-shadow 0.2s;
+}
+
+.field input::placeholder {
+  color: #8490a0;
+}
+
+.field input:focus {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 4px rgba(39, 133, 239, 0.18);
+}
+
+.password-toggle {
+  position: absolute;
+  top: 50%;
+  right: 10px;
+  display: grid;
+  width: 36px;
+  height: 36px;
+  place-items: center;
+  padding: 0;
+  transform: translateY(-50%);
+  border: 0;
+  border-radius: 8px;
+  color: #788597;
+  background: transparent;
+  cursor: pointer;
+}
+
+.password-toggle:hover {
+  background: #e8edf3;
+}
+
+.password-toggle svg {
+  width: 20px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.7;
+}
+
+.form-message {
+  display: none;
+  margin: -6px 0 -3px;
+  color: var(--color-danger);
+  font-size: 0.8rem;
+}
+
+.form-message.is-visible {
+  display: block;
+}
+
+.login-button {
+  display: flex;
+  height: 52px;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  border: 0;
+  border-radius: 12px;
+  color: white;
+  background: linear-gradient(135deg, #3292ff, #176fd4);
+  box-shadow: 0 10px 24px rgba(19, 112, 217, 0.25);
+  font-weight: 700;
+  cursor: pointer;
+  transition:
+    transform 0.2s,
+    box-shadow 0.2s,
+    background 0.2s;
+}
+
+.login-button:hover {
+  transform: translateY(-1px);
+  background: linear-gradient(135deg, #2785ef, #1264c3);
+  box-shadow: 0 13px 28px rgba(19, 112, 217, 0.34);
+}
+
+.login-button:active {
+  transform: translateY(0);
+}
+
+.login-button svg {
+  width: 18px;
+  fill: none;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 2;
+}
+
+@media (max-width: 760px) {
+  .login-page {
+    justify-content: center;
+    padding: 28px 18px 80px;
+    background-position: 38% center;
+  }
+
+  .login-page__shade {
+    background: rgba(2, 7, 12, 0.57);
+  }
+  .login-card {
+    padding: 31px 24px 24px;
+  }
+}
+
+@media (max-height: 650px) {
+  .login-page {
+    padding-top: 20px;
+    padding-bottom: 60px;
+  }
+  .login-card {
+    padding-top: 25px;
+    padding-bottom: 20px;
+  }
+  .login-card__header p {
+    margin-bottom: 20px;
+  }
+}

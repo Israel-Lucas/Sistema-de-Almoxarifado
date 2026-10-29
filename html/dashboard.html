@@ -1,0 +1,362 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta
+      name="description"
+      content="Painel de estoque do Almoxarifado sua empresa"
+    />
+    <title>Dashboard | Almoxarifado</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="../styles/base.css" />
+    <link rel="stylesheet" href="../styles/topbar.css" />
+    <link rel="stylesheet" href="../styles/dashboard.css" />
+  </head>
+  <body>
+    <header class="topbar">
+      <a
+        class="topbar__brand"
+        href="dashboard.html"
+        aria-label="Almoxarifado - Início"
+        ><span class="topbar__brand-mark" aria-hidden="true">A</span
+        ><span>Almoxarifado</span></a
+      >
+      <nav class="topbar__nav" aria-label="Navegação principal">
+        <a
+          class="topbar__link is-active"
+          href="dashboard.html"
+          aria-current="page"
+          >Dashboard</a
+        >
+        <a class="topbar__link" href="solicitacoes.html">Solicitação</a>
+        <a class="topbar__link" href="devolucoes.html">Devolução</a>
+        <a class="topbar__link" href="pedidos.html">Pedidos</a>
+        <a class="topbar__link" href="registros.html" data-master-only
+          >Registros</a
+        >
+        <a class="topbar__link" href="usuarios.html" data-master-only
+          >Usuários</a
+        >
+      </nav>
+      <div class="topbar__actions">
+        <div class="topbar__user">
+          <span id="session-user-name">Usuário</span
+          ><small id="session-user-unit">Unidade</small>
+        </div>
+        <button class="topbar__logout" id="logout-button" type="button">
+          Sair
+        </button>
+      </div>
+    </header>
+
+    <main class="dashboard">
+      <header class="page-header">
+        <p class="page-header__eyebrow">Visão geral</p>
+        <h1 id="dashboard-title">Estoque por unidade</h1>
+        <p id="dashboard-description">
+          Consulte os saldos reais de cada produto.
+        </p>
+      </header>
+
+      <section class="inventory-summary" aria-label="Resumo do estoque">
+        <article class="summary-card">
+          <span>Unidades exibidas</span><strong id="units-count">0</strong
+          ><small>Unidades incluídas nesta visão</small>
+        </article>
+        <article class="summary-card">
+          <span>Produtos com saldo</span><strong id="products-count">0</strong
+          ><small>Produtos diferentes disponíveis</small>
+        </article>
+        <article class="summary-card">
+          <span>Quantidade total</span><strong id="quantity-count">0</strong
+          ><small>Soma de todos os saldos exibidos</small>
+        </article>
+        <article class="summary-card summary-card--warning" data-matrix-only>
+          <span>Itens em atenção</span><strong id="warning-count">0</strong
+          ><small>Saldo igual ou inferior a 5</small>
+        </article>
+      </section>
+
+      <section class="analytics-panel" aria-labelledby="analytics-title">
+        <div class="analytics-heading">
+          <div>
+            <p class="page-header__eyebrow">Indicadores</p>
+            <h2 id="analytics-title">Desempenho das solicitações</h2>
+            <p>
+              Pedidos, consumo e tempos calculados a partir do histórico real.
+            </p>
+          </div>
+          <form id="analytics-filters" class="analytics-filters">
+            <label
+              ><span>Período</span
+              ><select id="analytics-days">
+                <option value="30">Últimos 30 dias</option>
+                <option value="90" selected>Últimos 90 dias</option>
+                <option value="180">Últimos 180 dias</option>
+                <option value="365">Último ano</option>
+                <option value="0">Todo o histórico</option>
+              </select></label
+            >
+            <label data-master-only
+              ><span>Unidade</span
+              ><select id="analytics-unit">
+                <option value="">Todas</option>
+              </select></label
+            >
+            <label
+              ><span>Tipo</span
+              ><select id="analytics-type">
+                <option value="">Todos</option>
+              </select></label
+            >
+            <label
+              ><span>Produto</span
+              ><select id="analytics-product">
+                <option value="">Todos</option>
+              </select></label
+            >
+            <button type="submit">Atualizar</button>
+          </form>
+        </div>
+
+        <div class="analytics-summary" aria-label="Indicadores de pedidos">
+          <article>
+            <span>Pedidos</span><strong id="metric-orders">—</strong
+            ><small>no período</small>
+          </article>
+          <article class="metric-warning">
+            <span>Pendentes</span><strong id="metric-pending">—</strong
+            ><small>aguardando análise</small>
+          </article>
+          <article>
+            <span>Entregues</span><strong id="metric-delivered">—</strong
+            ><small>pedidos concluídos</small>
+          </article>
+          <article class="metric-danger">
+            <span>Recusados</span><strong id="metric-rejected">—</strong
+            ><small>pedidos recusados</small>
+          </article>
+          <article>
+            <span>Aprovação média</span><strong id="metric-approval">—</strong
+            ><small>da criação à análise</small>
+          </article>
+          <article>
+            <span>Entrega média</span><strong id="metric-delivery">—</strong
+            ><small>da aprovação à entrega</small>
+          </article>
+        </div>
+
+        <div class="analytics-grid">
+          <article class="analytics-card analytics-card--wide">
+            <header>
+              <h3>Pedidos por mês</h3>
+              <p>Volume criado e concluído no período.</p>
+            </header>
+            <div
+              id="orders-chart"
+              class="column-chart"
+              aria-label="Gráfico de pedidos por mês"
+            ></div>
+          </article>
+          <article class="analytics-card">
+            <header>
+              <h3>Itens mais solicitados</h3>
+              <p>Quantidade total pedida.</p>
+            </header>
+            <div id="top-products-chart" class="ranking-chart"></div>
+          </article>
+          <article class="analytics-card">
+            <header>
+              <h3>Kits mais solicitados</h3>
+              <p>Quantidade total de kits pedidos.</p>
+            </header>
+            <div id="top-kits-chart" class="ranking-chart"></div>
+          </article>
+          <article class="analytics-card" data-master-only>
+            <header>
+              <h3>Unidades com maior consumo</h3>
+              <p>Itens efetivamente entregues.</p>
+            </header>
+            <div id="top-units-chart" class="ranking-chart"></div>
+          </article>
+          <article class="analytics-card" data-master-only>
+            <header>
+              <h3>Movimentações</h3>
+              <p>Quantidade movimentada por operação.</p>
+            </header>
+            <div id="movements-chart" class="ranking-chart"></div>
+          </article>
+        </div>
+
+        <article class="analytics-card analytics-table-card">
+          <header>
+            <h3>Pedidos pendentes há mais tempo</h3>
+            <p>Os mais antigos aparecem primeiro.</p>
+          </header>
+          <div class="table-container">
+            <table>
+              <thead>
+                <tr>
+                  <th>Pedido</th>
+                  <th>Unidade</th>
+                  <th>Solicitante</th>
+                  <th>Itens</th>
+                  <th>Quantidade</th>
+                  <th>Aguardando</th>
+                </tr>
+              </thead>
+              <tbody id="pending-orders-body"></tbody>
+            </table>
+            <p id="pending-orders-empty" class="empty-state" hidden>
+              Nenhum pedido pendente neste período.
+            </p>
+          </div>
+        </article>
+
+        <article class="analytics-card analytics-table-card" data-master-only>
+          <header>
+            <h3>Itens sem uso recente</h3>
+            <p>Sem solicitação ou movimentação nos últimos 90 dias.</p>
+          </header>
+          <div class="table-container">
+            <table>
+              <thead>
+                <tr>
+                  <th>Item</th>
+                  <th>Modelo</th>
+                  <th>Tipo</th>
+                  <th>Saldo na Matriz</th>
+                </tr>
+              </thead>
+              <tbody id="unused-products-body"></tbody>
+            </table>
+            <p id="unused-products-empty" class="empty-state" hidden>
+              Nenhum item sem uso recente.
+            </p>
+          </div>
+        </article>
+      </section>
+
+      <section
+        class="attention-panel"
+        aria-labelledby="attention-title"
+        data-matrix-only
+      >
+        <div class="section-heading">
+          <div>
+            <h2 id="attention-title">Itens mais importantes</h2>
+            <p>
+              Produtos sem estoque ou com saldo baixo que precisam de atenção.
+            </p>
+          </div>
+        </div>
+        <div id="attention-list" class="attention-list"></div>
+        <p id="attention-empty" class="empty-state" hidden>
+          Nenhum item com saldo baixo.
+        </p>
+      </section>
+
+      <section class="inventory-panel" aria-labelledby="inventory-title">
+        <div class="inventory-panel__header">
+          <div>
+            <h2 id="inventory-title">Detalhamento do estoque</h2>
+            <p>Quantidades separadas por produto e unidade.</p>
+          </div>
+          <button class="filter-button" id="open-filter-dialog" type="button">
+            <span aria-hidden="true">▽</span> Filtros
+            <b id="active-filter-count" hidden>0</b>
+          </button>
+          <button
+            class="filter-button"
+            id="export-inventory"
+            type="button"
+            data-master-only
+          >
+            Exportar CSV
+          </button>
+        </div>
+        <div class="table-container">
+          <table>
+            <thead>
+              <tr>
+                <th>Item</th>
+                <th>Modelo</th>
+                <th>Tipo</th>
+                <th>Unidade</th>
+                <th>Quantidade</th>
+                <th id="stock-status-heading">Situação</th>
+              </tr>
+            </thead>
+            <tbody id="inventory-table-body"></tbody>
+          </table>
+          <p id="inventory-empty" class="empty-state" hidden>
+            Nenhum item encontrado com esses filtros.
+          </p>
+        </div>
+      </section>
+    </main>
+    <dialog id="filter-dialog" class="filter-dialog">
+      <form id="filter-form" method="dialog">
+        <header>
+          <div>
+            <h2>Filtrar estoque</h2>
+            <p>Combine quantos filtros precisar.</p>
+          </div>
+          <button id="close-filter-dialog" type="button" aria-label="Fechar">
+            ×
+          </button>
+        </header>
+        <div class="filter-grid">
+          <label id="status-filter-field"
+            ><span>Unidade</span
+            ><select id="unit-filter">
+              <option value="">Todas as unidades</option>
+            </select></label
+          >
+          <label
+            ><span>Situação</span
+            ><select id="status-filter">
+              <option value="">Todas as situações</option>
+              <option value="AVAILABLE">Disponível</option>
+              <option value="WARNING">Estoque baixo</option>
+              <option value="EMPTY">Sem estoque</option>
+            </select></label
+          >
+          <label
+            ><span>Tipo</span
+            ><select id="type-filter">
+              <option value="">Todos os tipos</option>
+            </select></label
+          >
+          <label
+            ><span>Modelo</span
+            ><select id="model-filter">
+              <option value="">Todos os modelos</option>
+            </select></label
+          >
+          <label class="filter-grid__wide"
+            ><span>Item</span
+            ><select id="item-filter">
+              <option value="">Todos os itens</option>
+            </select></label
+          >
+        </div>
+        <footer>
+          <button class="filter-clear" id="clear-filters" type="button">
+            Limpar filtros</button
+          ><button class="filter-apply" type="submit">Aplicar filtros</button>
+        </footer>
+      </form>
+    </dialog>
+    <script src="../scripts/api.js"></script>
+    <script src="../scripts/ui-safety.js"></script>
+    <script src="../scripts/notifications.js"></script>
+    <script src="../scripts/dashboard.js"></script>
+  </body>
+</html>

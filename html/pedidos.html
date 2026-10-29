@@ -1,0 +1,429 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Pedidos | Almoxarifado</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="../styles/base.css" />
+    <link rel="stylesheet" href="../styles/topbar.css" />
+    <link rel="stylesheet" href="../styles/forms.css" />
+    <link rel="stylesheet" href="../styles/pedidos.css" />
+  </head>
+  <body>
+    <header class="topbar">
+      <a class="topbar__brand" href="dashboard.html"
+        ><span class="topbar__brand-mark">A</span><span>Almoxarifado</span></a
+      >
+      <nav class="topbar__nav" aria-label="Navegação principal">
+        <a class="topbar__link" href="dashboard.html">Dashboard</a
+        ><a class="topbar__link" href="solicitacoes.html">Solicitação</a
+        ><a class="topbar__link" href="devolucoes.html">Devolução</a
+        ><a
+          class="topbar__link is-active"
+          href="pedidos.html"
+          aria-current="page"
+          >Pedidos</a
+        ><a class="topbar__link" href="registros.html" data-master-only
+          >Registros</a
+        ><a class="topbar__link" href="usuarios.html" data-master-only
+          >Usuários</a
+        >
+      </nav>
+      <div class="topbar__actions">
+        <div class="topbar__user">
+          <span id="session-user-name">Usuário</span
+          ><small id="session-user-unit">Unidade</small>
+        </div>
+        <button class="topbar__logout" id="logout-button" type="button">
+          Sair
+        </button>
+      </div>
+    </header>
+    <main class="orders-page">
+      <header class="orders-heading">
+        <p>Acompanhamento</p>
+        <h1>Pedidos</h1>
+        <span id="orders-description"
+          >Acompanhe as solicitações registradas.</span
+        >
+      </header>
+      <nav class="order-tabs" aria-label="Tipo de pedido">
+        <button id="stock-orders-tab" class="is-active" type="button">
+          Itens do estoque
+        </button>
+        <button id="purchase-orders-tab" type="button">
+          Itens novos / compras
+        </button>
+        <button id="return-orders-tab" type="button">Devoluções</button>
+      </nav>
+      <div id="stock-orders-content">
+        <section
+          id="stock-orders-filter"
+          class="orders-filters"
+          aria-label="Filtros"
+        >
+          <input
+            id="orders-search"
+            type="search"
+            placeholder="Pesquisar item ou unidade"
+          /><select id="status-filter">
+            <option value="">Todos os status</option>
+            <option value="SOLICITADO">Solicitado</option>
+            <option value="APROVADO">Aprovado</option>
+            <option value="RECUSADO">Recusado</option>
+            <option value="CANCELADO">Cancelado</option>
+            <option value="APROVADO_PARCIALMENTE">
+              Aprovado parcialmente
+            </option></select
+          ><button id="export-orders" class="review-button" type="button">
+            Exportar CSV
+          </button>
+        </section>
+        <div id="purchase-orders-content" hidden>
+          <section class="orders-filters">
+            <input
+              id="purchase-search"
+              type="search"
+              placeholder="Pesquisar item ou unidade"
+            /><select id="purchase-status">
+              <option value="">Todos os status</option>
+              <option value="SOLICITADO">Solicitado</option>
+              <option value="APROVADO">Aprovado</option>
+              <option value="RECUSADO">Recusado</option>
+              <option value="EM_COMPRA">Em compra</option>
+              <option value="RECEBIDO">Recebido</option>
+            </select>
+            <button id="export-purchases" class="review-button" type="button">
+              Exportar CSV
+            </button>
+          </section>
+          <section class="orders-panel">
+            <div class="orders-table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Nº</th>
+                    <th>Item</th>
+                    <th>Unidade</th>
+                    <th>Qtd.</th>
+                    <th>Prioridade</th>
+                    <th>Justificativa / referência</th>
+                    <th>Status</th>
+                    <th>Ação</th>
+                  </tr>
+                </thead>
+                <tbody id="purchase-table-body"></tbody>
+              </table>
+            </div>
+            <nav class="pagination">
+              <button id="purchase-prev" type="button">Anterior</button
+              ><span id="purchase-page-info">Página 1</span
+              ><button id="purchase-next" type="button">Próxima</button>
+            </nav>
+            <div id="purchase-empty" class="orders-empty" hidden>
+              <strong>Nenhuma solicitação de compra</strong>
+            </div>
+          </section>
+        </div>
+        <section id="stock-orders-panel" class="orders-panel">
+          <div class="orders-table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Pedido</th>
+                  <th>Unidade</th>
+                  <th>Itens</th>
+                  <th>Motivo</th>
+                  <th>Data</th>
+                  <th>Status</th>
+                  <th id="actions-heading">Ação</th>
+                </tr>
+              </thead>
+              <tbody id="orders-table-body"></tbody>
+            </table>
+          </div>
+          <nav class="pagination" aria-label="Paginação">
+            <button id="orders-prev" type="button">Anterior</button
+            ><span id="orders-page-info">Página 1</span
+            ><button id="orders-next" type="button">Próxima</button>
+          </nav>
+          <div id="orders-empty" class="orders-empty" hidden>
+            <strong>Nenhum pedido encontrado</strong>
+            <p>As solicitações enviadas aparecerão aqui.</p>
+          </div>
+        </section>
+        <div id="return-orders-content" hidden>
+          <section class="orders-filters">
+            <input
+              id="return-orders-search"
+              type="search"
+              placeholder="Pesquisar item, número ou unidade"
+            />
+            <select id="return-orders-status">
+              <option value="">Todos os status</option>
+              <option value="SOLICITADO">Aguardando recebimento</option>
+              <option value="RECEBIDO">Recebida</option>
+              <option value="CANCELADO">Cancelada</option>
+            </select>
+            <button id="export-returns" class="review-button" type="button">
+              Exportar CSV
+            </button>
+          </section>
+          <section class="orders-panel">
+            <div class="orders-table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Devolução</th>
+                    <th>Unidade</th>
+                    <th>Itens</th>
+                    <th>Motivo</th>
+                    <th>Data</th>
+                    <th>Status</th>
+                    <th>Ação</th>
+                  </tr>
+                </thead>
+                <tbody id="return-orders-body"></tbody>
+              </table>
+            </div>
+            <nav class="pagination">
+              <button id="return-orders-prev" type="button">Anterior</button
+              ><span id="return-orders-page-info">Página 1</span
+              ><button id="return-orders-next" type="button">Próxima</button>
+            </nav>
+            <div id="return-orders-empty" class="orders-empty" hidden>
+              <strong>Nenhuma devolução encontrada</strong>
+            </div>
+          </section>
+        </div>
+      </div>
+    </main>
+    <dialog id="status-dialog" class="app-dialog">
+      <form id="status-form" method="dialog">
+        <header>
+          <div>
+            <h2>Analisar pedido</h2>
+            <p id="status-order-name"></p>
+          </div>
+          <button
+            class="icon-button"
+            id="close-status-dialog"
+            type="button"
+            aria-label="Fechar"
+          >
+            ×
+          </button>
+        </header>
+        <input id="status-request-id" type="hidden" />
+        <div id="decision-items" class="decision-items"></div>
+        <p id="status-form-message" class="form-feedback" role="alert"></p>
+        <footer>
+          <button
+            class="secondary-button"
+            id="cancel-status-dialog"
+            type="button"
+          >
+            Cancelar</button
+          ><button class="primary-button" type="submit">Salvar status</button>
+        </footer>
+      </form>
+    </dialog>
+    <dialog id="purchase-action-dialog" class="app-dialog app-dialog--small">
+      <form id="purchase-action-form" method="dialog">
+        <header>
+          <div>
+            <h2 id="purchase-action-title">Analisar compra</h2>
+            <p id="purchase-action-name"></p>
+          </div>
+          <button class="icon-button" type="button" data-close-purchase-action>
+            ×
+          </button>
+        </header>
+        <input id="purchase-action-id" type="hidden" /><input
+          id="purchase-action-mode"
+          type="hidden"
+        />
+        <div class="form-grid">
+          <label
+            id="purchase-decision-field"
+            class="form-field form-field--wide"
+            ><span>Decisão</span
+            ><select id="purchase-decision">
+              <option value="APPROVE">Aprovar</option>
+              <option value="REJECT">Recusar</option>
+            </select></label
+          ><label class="form-field form-field--wide"
+            ><span>Nota</span
+            ><textarea
+              id="purchase-action-note"
+              maxlength="500"
+              rows="4"
+            ></textarea>
+          </label>
+        </div>
+        <p id="purchase-action-message" class="form-feedback"></p>
+        <footer>
+          <button
+            class="secondary-button"
+            type="button"
+            data-close-purchase-action
+          >
+            Cancelar</button
+          ><button class="primary-button" type="submit">Salvar</button>
+        </footer>
+      </form>
+    </dialog>
+    <dialog id="purchase-receive-dialog" class="app-dialog">
+      <form id="purchase-receive-form" method="dialog">
+        <header>
+          <div>
+            <h2>Receber e criar produto</h2>
+            <p id="purchase-receive-name"></p>
+          </div>
+          <button class="icon-button" type="button" data-close-purchase-receive>
+            ×
+          </button>
+        </header>
+        <input id="purchase-receive-id" type="hidden" />
+        <div class="form-grid">
+          <label class="form-field form-field--wide"
+            ><span>Nome do produto</span
+            ><input id="receive-name" maxlength="100" required /></label
+          ><label class="form-field"
+            ><span>Modelo</span
+            ><input id="receive-model" maxlength="100" required /></label
+          ><label class="form-field"
+            ><span>Tipo</span
+            ><select id="receive-type" required></select></label
+          ><label class="form-field"
+            ><span>Quantidade recebida</span
+            ><input
+              id="receive-quantity"
+              type="number"
+              min="1"
+              max="999"
+              step="1"
+              required /></label
+          ><label class="form-field form-field--wide"
+            ><span>Descrição <small>(opcional)</small></span
+            ><textarea
+              id="receive-description"
+              maxlength="500"
+              rows="3"
+            ></textarea>
+          </label>
+        </div>
+        <p id="purchase-receive-message" class="form-feedback"></p>
+        <footer>
+          <button
+            class="secondary-button"
+            type="button"
+            data-close-purchase-receive
+          >
+            Cancelar</button
+          ><button class="primary-button" type="submit">
+            Confirmar recebimento
+          </button>
+        </footer>
+      </form>
+    </dialog>
+    <dialog id="cancel-dialog" class="app-dialog app-dialog--small">
+      <form id="cancel-form" method="dialog">
+        <header>
+          <div>
+            <h2>Cancelar pedido</h2>
+            <p id="cancel-order-name"></p>
+          </div>
+          <button class="icon-button" type="button" data-close-cancel>×</button>
+        </header>
+        <input id="cancel-request-id" type="hidden" />
+        <div class="form-grid">
+          <label class="form-field form-field--wide"
+            ><span>Motivo do cancelamento</span
+            ><textarea
+              id="cancel-reason"
+              maxlength="500"
+              rows="4"
+              required
+            ></textarea>
+          </label>
+        </div>
+        <p id="cancel-form-message" class="form-feedback" role="alert"></p>
+        <footer>
+          <button class="secondary-button" type="button" data-close-cancel>
+            Voltar</button
+          ><button class="danger-button" type="submit">
+            Confirmar cancelamento
+          </button>
+        </footer>
+      </form>
+    </dialog>
+    <dialog
+      id="return-order-cancel-dialog"
+      class="app-dialog app-dialog--small"
+    >
+      <form id="return-order-cancel-form" method="dialog">
+        <header>
+          <div>
+            <h2>Cancelar devolução</h2>
+            <p id="return-order-cancel-name"></p>
+          </div>
+          <button
+            class="icon-button"
+            type="button"
+            data-close-return-order-cancel
+            aria-label="Fechar"
+          >
+            ×
+          </button>
+        </header>
+        <input id="return-order-cancel-id" type="hidden" />
+        <div class="form-grid">
+          <label class="form-field form-field--wide"
+            ><span>Motivo do cancelamento</span
+            ><textarea
+              id="return-order-cancel-reason"
+              maxlength="500"
+              rows="4"
+              required
+            ></textarea>
+          </label>
+        </div>
+        <p
+          id="return-order-cancel-message"
+          class="form-feedback"
+          role="alert"
+        ></p>
+        <footer>
+          <button
+            class="secondary-button"
+            type="button"
+            data-close-return-order-cancel
+          >
+            Voltar</button
+          ><button class="danger-button" type="submit">
+            Confirmar cancelamento
+          </button>
+        </footer>
+      </form>
+    </dialog>
+    <div
+      id="page-notice"
+      class="page-notice"
+      role="status"
+      aria-live="polite"
+    ></div>
+    <script src="../scripts/api.js"></script>
+    <script src="../scripts/ui-safety.js"></script>
+    <script src="../scripts/notifications.js"></script>
+    <script src="../scripts/pedidos.js"></script>
+    <script src="../scripts/purchase-requests.js"></script>
+    <script src="../scripts/return-orders.js"></script>
+  </body>
+</html>

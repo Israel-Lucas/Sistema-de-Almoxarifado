@@ -1,0 +1,31 @@
+{
+  "name": "almoxarifado-sua-empresa",
+  "version": "4.0.0",
+  "private": true,
+  "description": "Sistema interno de almoxarifado da sua empresa",
+  "main": "server/app.js",
+  "scripts": {
+    "dev": "node --watch server/app.js",
+    "start": "node server/app.js",
+    "db:migrate": "node server/database/migrate.js",
+    "db:seed": "node server/database/seed.js",
+    "check": "prettier --check \"server/**/*.js\" \"scripts/**/*.js\" \"html/**/*.html\" \"styles/**/*.css\"",
+    "format": "prettier --write \"server/**/*.js\" \"scripts/**/*.js\" \"html/**/*.html\" \"styles/**/*.css\""
+  },
+  "dependencies": {
+    "bcryptjs": "^3.0.2",
+    "connect-pg-simple": "^10.0.0",
+    "dotenv": "^17.2.0",
+    "express": "^5.1.0",
+    "express-rate-limit": "^8.0.1",
+    "express-session": "^1.18.2",
+    "helmet": "^8.1.0",
+    "multer": "^2.0.2",
+    "nodemailer": "^9.0.3",
+    "pg": "^8.16.3",
+    "zod": "^4.0.5"
+  },
+  "devDependencies": {
+    "prettier": "^3.9.5"
+  }
+}

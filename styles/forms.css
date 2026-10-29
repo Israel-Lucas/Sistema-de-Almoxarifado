@@ -1,0 +1,233 @@
+.primary-button,
+.secondary-button {
+  min-height: 42px;
+  padding: 0 17px;
+  border-radius: 9px;
+  font-weight: 700;
+  cursor: pointer;
+}
+.danger-button {
+  min-height: 42px;
+  padding: 0 17px;
+  border: 1px solid #a83d49;
+  border-radius: 9px;
+  color: #fff;
+  background: #8e2f3a;
+  font-weight: 700;
+  cursor: pointer;
+}
+.danger-button:hover {
+  border-color: #d45865;
+  background: #a83d49;
+}
+.danger-button:focus-visible {
+  outline: 3px solid rgba(239, 77, 91, 0.28);
+  outline-offset: 2px;
+}
+.primary-button {
+  border: 0;
+  color: #fff;
+  background: var(--color-primary);
+}
+.primary-button:hover {
+  background: var(--color-primary-dark);
+}
+.secondary-button {
+  border: 1px solid #3a4859;
+  color: #dce4ed;
+  background: #17212c;
+}
+.icon-button {
+  width: 36px;
+  height: 36px;
+  border: 0;
+  border-radius: 8px;
+  color: #8996a6;
+  background: transparent;
+  font-size: 1.5rem;
+  cursor: pointer;
+}
+.icon-button:hover {
+  background: #202b38;
+}
+.app-dialog {
+  width: min(620px, calc(100% - 28px));
+  padding: 0;
+  border: 1px solid #344252;
+  border-radius: 16px;
+  color: var(--color-text);
+  background: #111a24;
+  box-shadow: 0 28px 80px #000a;
+}
+.app-dialog--small {
+  width: min(480px, calc(100% - 28px));
+}
+.app-dialog::backdrop {
+  background: rgba(1, 5, 10, 0.75);
+  backdrop-filter: blur(4px);
+}
+.app-dialog form > header,
+.app-dialog form > footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 15px;
+  padding: 20px 24px;
+}
+.app-dialog form > header {
+  border-bottom: 1px solid #283543;
+}
+.app-dialog form > footer {
+  justify-content: flex-end;
+  border-top: 1px solid #283543;
+}
+.app-dialog h2 {
+  margin: 0;
+  font-size: 1.05rem;
+}
+.app-dialog header p {
+  margin: 6px 0 0;
+  color: #8190a2;
+  font-size: 0.74rem;
+}
+.form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 17px;
+  padding: 24px;
+}
+.form-field {
+  display: grid;
+  gap: 7px;
+}
+.form-field--wide {
+  grid-column: 1 / -1;
+}
+.form-field span {
+  color: #cbd5e0;
+  font-size: 0.76rem;
+  font-weight: 600;
+}
+.form-field input,
+.form-field textarea,
+.form-field select {
+  width: 100%;
+  border: 1px solid #354456;
+  border-radius: 9px;
+  outline: none;
+  color: #edf2f7;
+  background: #0a1119;
+}
+.form-field input,
+.form-field select {
+  height: 43px;
+  padding: 0 12px;
+}
+.form-field textarea {
+  padding: 11px 12px;
+  resize: vertical;
+}
+.form-field input:focus,
+.form-field textarea:focus,
+.form-field select:focus {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px rgba(39, 133, 239, 0.14);
+}
+.form-feedback {
+  min-height: 18px;
+  margin: -10px 24px 10px;
+  color: var(--color-danger);
+  font-size: 0.75rem;
+}
+.error-toast {
+  position: fixed;
+  z-index: 2000;
+  top: 24px;
+  left: 50%;
+  width: min(520px, calc(100% - 32px));
+  padding: 15px 18px;
+  border: 1px solid #a43d49;
+  border-radius: 12px;
+  opacity: 0;
+  color: #ffe8ea;
+  background: #3a171d;
+  box-shadow: 0 18px 55px rgba(0, 0, 0, 0.55);
+  font-size: 0.8rem;
+  font-weight: 600;
+  line-height: 1.45;
+  transform: translate(-50%, -12px);
+  transition:
+    opacity 0.18s ease,
+    transform 0.18s ease;
+  pointer-events: none;
+}
+.error-toast[hidden] {
+  display: none;
+}
+.error-toast.is-visible {
+  opacity: 1;
+  transform: translate(-50%, 0);
+}
+.inline-create {
+  display: flex;
+  gap: 9px;
+}
+.inline-create input {
+  flex: 1;
+}
+.management-list {
+  margin: 0 24px 22px;
+  padding-top: 18px;
+  border-top: 1px solid #283543;
+}
+.management-list h3 {
+  margin: 0 0 12px;
+  font-size: 0.8rem;
+}
+.management-list__item {
+  display: flex;
+  min-height: 42px;
+  align-items: center;
+  justify-content: space-between;
+  gap: 15px;
+  padding: 7px 0;
+  border-bottom: 1px solid #202c39;
+  color: #cbd5df;
+  font-size: 0.76rem;
+}
+.management-list__delete {
+  padding: 6px 9px;
+  border: 1px solid #51333a;
+  border-radius: 7px;
+  color: #ff939c;
+  background: #21151a;
+  font-size: 0.66rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+.management-list > p {
+  color: #758397;
+  font-size: 0.74rem;
+}
+.management-list__actions {
+  display: flex;
+  gap: 7px;
+}
+.management-list__toggle {
+  padding: 6px 9px;
+  border: 1px solid #3a4859;
+  border-radius: 7px;
+  color: #d8e1eb;
+  background: #17212c;
+  font-size: 0.66rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+@media (max-width: 560px) {
+  .form-grid {
+    grid-template-columns: 1fr;
+  }
+  .form-field {
+    grid-column: 1;
+  }
+}
