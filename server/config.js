@@ -21,9 +21,7 @@ module.exports = Object.freeze({
   databaseUrl: process.env.DATABASE_URL,
   sessionSecret: process.env.SESSION_SECRET,
   sessionHours: Math.max(1, Number(process.env.SESSION_HOURS || 8)),
-  notificationEmail:
-    process.env.NOTIFICATION_EMAIL || "notificacoes@suaempresa.example",
-  emailFrom: process.env.EMAIL_FROM || "notificacoes@suaempresa.example",
+  emailFrom: process.env.EMAIL_FROM || process.env.SMTP_USER || "",
   smtp: Object.freeze({
     host: process.env.SMTP_HOST || "",
     port: Number(process.env.SMTP_PORT || 587),

@@ -4,11 +4,6 @@ ALTER TABLE users ADD COLUMN IF NOT EXISTS email varchar(254);
 ALTER TABLE users ADD COLUMN IF NOT EXISTS normalized_email varchar(254);
 CREATE UNIQUE INDEX IF NOT EXISTS idx_users_normalized_email ON users(normalized_email) WHERE normalized_email IS NOT NULL AND deleted_at IS NULL;
 
-UPDATE users u
-SET email = 'notificacoes@suaempresa.example', normalized_email = 'notificacoes@suaempresa.example'
-FROM units un
-WHERE u.unit_id = un.id AND un.code = 'MATRIZ' AND u.role = 'MASTER' AND u.email IS NULL;
-
 CREATE SEQUENCE IF NOT EXISTS request_number_seq;
 ALTER TABLE requests ADD COLUMN IF NOT EXISTS request_number bigint;
 UPDATE requests SET request_number = nextval('request_number_seq') WHERE request_number IS NULL;
@@ -90,14 +85,10 @@ BEGIN
   email_body := 'Usuario ' || requester_name || ' solicitou ' || NEW.requested_quantity || ' quantidade do item ' || product_name || ' para a unidade ' || unit_name;
 
   INSERT INTO email_outbox(recipient, subject, body)
-  SELECT DISTINCT recipient, email_subject, email_body
-  FROM (
-    SELECT 'notificacoes@suaempresa.example'::varchar AS recipient
-    UNION ALL
-    SELECT u.email FROM users u JOIN units un ON un.id = u.unit_id
-    WHERE u.active AND u.deleted_at IS NULL AND u.role = 'MASTER' AND un.code = 'MATRIZ' AND u.email IS NOT NULL
-  ) recipients
-  WHERE recipient IS NOT NULL;
+  SELECT DISTINCT u.email, email_subject, email_body
+  FROM users u JOIN units un ON un.id = u.unit_id
+  WHERE u.active AND u.deleted_at IS NULL AND u.role = 'MASTER'
+    AND un.code = 'MATRIZ' AND u.email IS NOT NULL;
 
   RETURN NEW;
 END;

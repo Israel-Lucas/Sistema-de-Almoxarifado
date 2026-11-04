@@ -30,14 +30,10 @@ BEGIN
   email_body := 'Usuário ' || requester_name || ' solicitou ' || NEW.requested_quantity || ' ' || product_name || ' para a unidade de ' || unit_name;
 
   INSERT INTO email_outbox(recipient, subject, body)
-  SELECT DISTINCT recipient, email_subject, email_body
-  FROM (
-    SELECT 'notificacoes@suaempresa.example'::varchar AS recipient
-    UNION ALL
-    SELECT u.email FROM users u JOIN units un ON un.id = u.unit_id
-    WHERE u.active AND u.deleted_at IS NULL AND u.role = 'MASTER' AND un.code = 'MATRIZ' AND u.email IS NOT NULL
-  ) recipients
-  WHERE recipient IS NOT NULL;
+  SELECT DISTINCT u.email, email_subject, email_body
+  FROM users u JOIN units un ON un.id = u.unit_id
+  WHERE u.active AND u.deleted_at IS NULL AND u.role = 'MASTER'
+    AND un.code = 'MATRIZ' AND u.email IS NOT NULL;
 
   RETURN NEW;
 END;

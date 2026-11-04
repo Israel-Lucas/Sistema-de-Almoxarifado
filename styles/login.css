@@ -9,7 +9,7 @@
   background-color: #07111b;
   background-image:
     radial-gradient(circle at 40% 43%, rgba(29, 58, 83, 0.22), transparent 34%),
-    url("../assets/images/login-background.png");
+    linear-gradient(135deg, #07111b, #102c45);
   background-position: center;
   background-size: cover;
   background-repeat: no-repeat;

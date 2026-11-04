@@ -6,18 +6,21 @@ Sistema interno para cadastro de itens, controle do estoque central da Matriz,
 solicitações das unidades, acompanhamento de pedidos, notificações, e-mails e
 auditoria das operações.
 
-## Estado entregue
+## Dados da aplicação
 
-O banco foi preparado sem dados operacionais. Permanecem somente:
+O repositório contém o código e as migrações do sistema. Cadastre os dados
+operacionais no banco da sua empresa, sem incluir dados reais neste repositório.
 
-- unidade protegida `Matriz`;
-- usuário master protegido `usuario_master`;
-- estrutura do schema `almoxarifado`;
-- histórico de migrações.
+## Privacidade e LGPD
 
-Produtos, tipos, outras unidades, outros usuários, pedidos, estoques,
-movimentações, notificações, e-mails pendentes, sessões e registros de teste
-foram removidos.
+O código não inclui uma base operacional. Em uso, o sistema pode processar
+nomes, usuários, e-mails, dados de pedidos e anexos enviados pelos usuários. Os
+registros de auditoria também armazenam o IP e os detalhes das operações.
+
+Antes de usar com dados reais, a empresa responsável deve definir finalidade e
+base legal, informar os titulares, limitar acesso e retenção, proteger backups
+e atender solicitações de titulares. Não publique arquivos `.env`, dumps,
+logs, anexos ou dados reais neste repositório.
 
 ## Tecnologias
 
@@ -57,8 +60,8 @@ Copie `.env.example` para `.env` e preencha os valores:
 NODE_ENV=development
 HOST=0.0.0.0
 PORT=3000
-DATABASE_URL=postgres://USUARIO:SENHA@SERVIDOR:5432/NOME_DO_BANCO
-SESSION_SECRET=gere-uma-chave-aleatoria-com-pelo-menos-32-caracteres
+DATABASE_URL=postgresql://usuario:senha@localhost:5432/nome_do_banco
+SESSION_SECRET=
 SESSION_HOURS=8
 EMAIL_FROM=
 SMTP_HOST=
@@ -66,6 +69,9 @@ SMTP_PORT=587
 SMTP_SECURE=false
 SMTP_USER=
 SMTP_PASSWORD=
+ADMIN_USERNAME=
+ADMIN_NAME=
+ADMIN_PASSWORD=
 ```
 
 ### Regras das variáveis
@@ -75,10 +81,12 @@ SMTP_PASSWORD=
 - `DATABASE_URL`: conexão completa com o PostgreSQL.
 - `SESSION_SECRET`: chave aleatória privada com no mínimo 32 caracteres.
 - `SESSION_HOURS`: duração da sessão em horas.
-- `NOTIFICATION_EMAIL`: destinatário fixo dos avisos.
-- `EMAIL_FROM`: remetente apresentado nas mensagens.
+- `EMAIL_FROM`: remetente apresentado nas mensagens; se vazio, usa `SMTP_USER`.
 - `SMTP_SECURE=false`: configuração comum para porta 587 com STARTTLS.
 - `SMTP_SECURE=true`: normalmente utilizado com SMTP na porta 465.
+- `ADMIN_USERNAME`, `ADMIN_NAME` e `ADMIN_PASSWORD`: credenciais usadas somente
+  pelo seed para criar o primeiro usuário master. Defina uma senha exclusiva
+  com pelo menos 12 caracteres antes de executar `npm run db:seed`.
 
 Se usuário ou senha do banco contiverem caracteres reservados de URL, eles
 precisam ser codificados na `DATABASE_URL`.
@@ -125,12 +133,6 @@ npm start
 
 Depois, acesse `http://IP_DO_SERVIDOR:3000`.
 
-### Banco já preparado
-
-Se o servidor utilizar o banco que foi limpo e validado durante o
-desenvolvimento, execute as migrações, mas não é necessário executar o seed.
-O usuário master atual e sua senha foram preservados.
-
 ### Banco completamente novo
 
 Para um banco vazio:
@@ -140,14 +142,13 @@ npm run db:migrate
 npm run db:seed
 ```
 
-O seed cria:
+Antes de executar o seed, defina no `.env` o usuário, o nome e uma senha forte
+do administrador (`ADMIN_USERNAME`, `ADMIN_NAME` e `ADMIN_PASSWORD`). O seed cria:
 
 - unidade `Matriz`;
-- usuário `usuario_master`;
-- senha inicial `definida no ambiente`.
+- usuário master com as credenciais configuradas no ambiente.
 
-Troque a senha imediatamente após o primeiro acesso. Executar o seed em um
-banco que já possui `usuario_master` não redefine a senha existente.
+Executar o seed novamente não altera a senha de uma conta já existente.
 
 ## Execução contínua
 
@@ -357,6 +358,8 @@ nova queda pode gerar outro e-mail.
 Os e-mails são gravados em `email_outbox` e processados em segundo plano. Uma
 falha não interrompe o pedido. O sistema tenta novamente, até o limite
 configurado no código, e preserva o erro para diagnóstico.
+Os avisos são enviados aos usuários master ativos da Matriz que tenham e-mail
+cadastrado; configure também o acesso SMTP no `.env`.
 
 ## Auditoria
 
@@ -473,7 +476,8 @@ Para atualizar o sistema:
 6. inicie o processo;
 7. valide login, dashboard, pedido e e-mail.
 
-Não execute novamente a limpeza de dados usada antes da entrega.
+Não execute rotinas de limpeza em um ambiente com dados reais sem autorização
+e backup verificado.
 
 ### Pedidos V2
 

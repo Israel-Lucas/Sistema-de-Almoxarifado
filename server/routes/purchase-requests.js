@@ -68,8 +68,9 @@ async function communicate(client, request, title, message, sendEmail = false) {
   if (sendEmail)
     await client.query(
       `INSERT INTO email_outbox(recipient,subject,body)
-    SELECT DISTINCT recipient,$1,$2 FROM (SELECT 'notificacoes@suaempresa.example'::varchar recipient UNION ALL
-    SELECT u.email FROM users u JOIN units un ON un.id=u.unit_id WHERE u.active AND u.deleted_at IS NULL AND u.role='MASTER' AND un.code='MATRIZ' AND u.email IS NOT NULL) x WHERE recipient IS NOT NULL`,
+       SELECT DISTINCT u.email,$1,$2 FROM users u JOIN units un ON un.id=u.unit_id
+       WHERE u.active AND u.deleted_at IS NULL AND u.role='MASTER'
+         AND un.code='MATRIZ' AND u.email IS NOT NULL`,
       [`Solicitação de compra para ${request.unit_name}`, message],
     );
 }

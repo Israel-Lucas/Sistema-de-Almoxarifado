@@ -18,19 +18,13 @@ BEGIN
   SELECT name INTO product_name FROM products WHERE id = NEW.product_id;
 
   INSERT INTO email_outbox(recipient, subject, body)
-  SELECT DISTINCT recipient,
+  SELECT DISTINCT u.email,
     'Estoque baixo',
     'O item ' || product_name || ' está com o estoque ' || NEW.quantity || ', solicitar compra ou devolução'
-  FROM (
-    SELECT 'notificacoes@suaempresa.example'::varchar AS recipient
-    UNION ALL
-    SELECT u.email
-    FROM users u
-    JOIN units un ON un.id = u.unit_id
-    WHERE u.active AND u.deleted_at IS NULL AND u.role = 'MASTER'
-      AND un.code = 'MATRIZ' AND u.email IS NOT NULL
-  ) recipients
-  WHERE recipient IS NOT NULL;
+  FROM users u
+  JOIN units un ON un.id = u.unit_id
+  WHERE u.active AND u.deleted_at IS NULL AND u.role = 'MASTER'
+    AND un.code = 'MATRIZ' AND u.email IS NOT NULL;
 
   RETURN NEW;
 END;

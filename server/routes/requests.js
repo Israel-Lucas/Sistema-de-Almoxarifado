@@ -52,11 +52,9 @@ async function notifyGroup(client, group, title, message, emailBody = null) {
   if (emailBody)
     await client.query(
       `INSERT INTO email_outbox(recipient,subject,body)
-       SELECT DISTINCT recipient,$1,$2 FROM (
-         SELECT 'notificacoes@suaempresa.example'::varchar AS recipient
-         UNION ALL SELECT u.email FROM users u JOIN units un ON un.id=u.unit_id
-         WHERE u.active AND u.deleted_at IS NULL AND u.role='MASTER' AND un.code='MATRIZ' AND u.email IS NOT NULL
-       ) x WHERE recipient IS NOT NULL`,
+       SELECT DISTINCT u.email,$1,$2 FROM users u JOIN units un ON un.id=u.unit_id
+       WHERE u.active AND u.deleted_at IS NULL AND u.role='MASTER'
+         AND un.code='MATRIZ' AND u.email IS NOT NULL`,
       [`Solicitação de itens para ${group.unit_name}`, emailBody],
     );
 }
